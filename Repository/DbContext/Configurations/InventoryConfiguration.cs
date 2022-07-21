@@ -13,8 +13,6 @@ namespace Repository.DbContext.Configurations
     {
         public void Configure(EntityTypeBuilder<Inventory> builder)
         {
-            builder.Property(x => x.Name).IsRequired();
-            builder.Property(x => x.Description).IsRequired();
             builder.Property(x => x.Quantity).IsRequired();
         }
     }

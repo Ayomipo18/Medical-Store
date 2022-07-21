@@ -15,12 +15,6 @@ namespace Repository.DbContext.Configurations
         {
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Description).IsRequired();
-            builder.Property(x => x.Quantity).IsRequired();
-            builder.Property(x => x.SellingPrice).IsRequired();
-            builder.Property(x => x.CostPrice).IsRequired();
-            builder.Property(x => x.ProfitMargin).IsRequired();
-            builder.Property(x => x.Manufacturer).IsRequired();
-            builder.Property(x => x.IsAvailable).IsRequired();
         }
     }
 }

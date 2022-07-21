@@ -9,13 +9,11 @@ using System.Threading.Tasks;
 
 namespace Repository.DbContext.Configurations
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.Property(x => x.Quantity).IsRequired();
-            builder.Property(x => x.TotalMoney).IsRequired();
-            builder.Property(x => x.Name).IsRequired();
         }
     }
 }
