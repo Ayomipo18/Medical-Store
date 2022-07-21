@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalStore.Presentation
+namespace Service.Contracts
 {
-    public class AuthenticationController
+    public class IServiceManager
     {
+
     }
 }

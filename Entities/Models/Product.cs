@@ -12,6 +12,8 @@ namespace Entities.Models
         public Guid CategoryId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public float CostPrice { get; set; }
+        public float ProfitMargin { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public Category Category { get; set; }

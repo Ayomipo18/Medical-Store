@@ -13,8 +13,9 @@ namespace Entities.Models.Identities
         public string LastName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        public DateTimeOffset LastLogin { get; set; }
+        public DateTime LastLogin { get; set; }
         public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
