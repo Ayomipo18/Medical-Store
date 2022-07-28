@@ -11,6 +11,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Service.Contracts\Service.Contracts.csproj" />
+  </ItemGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DocumentationFile>MedicalStore.Presentation.xml</DocumentationFile>
 		<OutputPath></OutputPath>

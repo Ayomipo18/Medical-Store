@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Entities.Models.Identities;
+using Shared.DataTransferObjects;
 
 namespace MedicalStore
 {
@@ -6,7 +8,9 @@ namespace MedicalStore
     {
         public MappingProfile()
         {
+            CreateMap<UserCreateDto, User>();
 
+            CreateMap<User, UserDto>();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using NLog;
+using Repository.DbContext;
 
 NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
     new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
@@ -20,9 +21,14 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 builder.Services.ConfigureCors();
 builder.Services.ConfifureIISIntegration();
 builder.Services.ConfigureLoggerService();
+builder.Services.ConfigureServiceManager();
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.ConfigureMvc();
 
 builder.Services.AddControllers(config =>
 {
@@ -33,6 +39,9 @@ builder.Services.AddControllers(config =>
 .AddApplicationPart(typeof(MedicalStore.Presentation.AssemblyReference).Assembly);
 
 var app = builder.Build();
+
+app.SeedRoleData().Wait();
+app.SeedUserData().Wait();
 
 // Configure the HTTP request pipeline.
 
