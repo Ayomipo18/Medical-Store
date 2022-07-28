@@ -1,8 +1,19 @@
 ﻿using Contracts;
+using Entities.ConfigurationModels;
+using Entities.Models.Identities;
+using FluentValidation.AspNetCore;
 using LoggerService;
+using MedicalStore.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.DbContext;
+using Service;
+using Service.Contracts;
+using Shared.Validations;
+using System.Text;
 
 namespace MedicalStore.Extensions
 {
@@ -27,10 +38,63 @@ namespace MedicalStore.Extensions
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerManager, LoggerManager>();
 
+        public static void ConfigureServiceManager(this IServiceCollection services) =>
+            services.AddScoped<IServiceManager, ServiceManager>();
+
         public static void ConfigureSqlContext(this IServiceCollection services,
             IConfiguration configuration) =>
                 services.AddDbContext<AppDbContext>(opts =>
                     opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
+
+        public static void ConfigureMvc(this IServiceCollection services)
+        {
+            services.AddMvc()
+                .ConfigureApiBehaviorOptions(o =>
+                {
+                    o.InvalidModelStateResponseFactory = context => new ValidationFailedResult(context.ModelState);
+                }).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserValidator>());
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        }
+
+        public static void ConfigureIdentity(this IServiceCollection services)
+        {
+            var builder = services.AddIdentity<User, Role>(o =>
+            {
+                o.Password.RequireDigit = true;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 8;
+                o.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+        }
+
+        public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtConfiguration = new JwtConfiguration();
+            configuration.Bind(jwtConfiguration.Section, jwtConfiguration);
+            var secretKey = Environment.GetEnvironmentVariable("SECRET");
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtConfiguration.ValidIssuer,
+                    ValidAudience = jwtConfiguration.ValidAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                };
+            });
+        }
 
         public static void ConfigureSwagger(this IServiceCollection services)
         {
