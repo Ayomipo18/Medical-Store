@@ -15,13 +15,5 @@ namespace Repository
         public ProductRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
-
-        public void CreateProduct(Product product) => Create(product);
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges) =>
-            await FindAll(trackChanges)
-                .ToListAsync();
-
-        //public async Task<Category> GetCategoryAsync(Guid id, bool trackChanges) =>
-        //    await FindByCondition()
     }
 }

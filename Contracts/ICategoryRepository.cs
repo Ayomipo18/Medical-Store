@@ -7,11 +7,7 @@ using System.Threading.Tasks;
 
 namespace Contracts
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepositoryBase<Category>
     {
-        void CreateCategory(Category category);
-        Task<IEnumerable<Category>> GetAllCategoriesAsync(bool trackchanges);
-        //Task<Category> GetCategoryAsync(Guid id, bool trackChanges);
-        //void DeleteCategory(Category category);
     }
 }

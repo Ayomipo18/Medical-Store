@@ -14,7 +14,7 @@ namespace Shared.Validations
         {
             RuleFor(x => x.FirstName).NotNull().NotEmpty().WithMessage("First Name is Required");
             RuleFor(x => x.LastName).NotNull().NotEmpty().WithMessage("Last Name is Required");
-            RuleFor(x => x.Email).NotNull().NotEmpty().WithMessage("Email is Required");
+            RuleFor(x => x.Email).NotNull().NotEmpty().EmailAddress().WithMessage("Email is Required");
             RuleFor(x => x.Password).NotNull().NotEmpty().WithMessage("Password is Required");
             RuleFor(x => x.Password)
                 .Matches(@"(?-i)(?=^.{8,}$)((?!.*\s)(?=.*[A-Z])(?=.*[a-z]))((?=(.*\d){1,})|(?=(.*\W){1,}))^.*$")

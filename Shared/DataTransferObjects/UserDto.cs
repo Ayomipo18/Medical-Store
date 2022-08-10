@@ -13,6 +13,17 @@ namespace Shared.DataTransferObjects
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public DateTime LastLogin { get; set; }
+    }
+
+    public record UserOrderDto
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
     }
 
     public record AuthDto
@@ -43,5 +54,14 @@ namespace Shared.DataTransferObjects
         public string RefreshToken { get; set; }
     }
 
+    public record LoggedInUserDto
+    {
+        public Guid UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Role { get; set; }
+    }
 
 }
