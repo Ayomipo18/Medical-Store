@@ -14,6 +14,8 @@ namespace Entities.Models
         public string Description { get; set; }
         public float CostPrice { get; set; }
         public float ProfitMargin { get; set; }
+        public float SellingPrice { get; set; }
+        public int Quantity { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public Category Category { get; set; }

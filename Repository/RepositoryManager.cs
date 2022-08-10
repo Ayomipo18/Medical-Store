@@ -12,7 +12,6 @@ namespace Repository
     {
         private readonly AppDbContext _appDbContext;
         private readonly Lazy<ICategoryRepository> _categoryRepository;
-        private readonly Lazy<IInventoryRepository> _inventoryRepository;
         private readonly Lazy<IOrderRepository> _orderRepository;
         private readonly Lazy<IProductRepository> _productRepository;
 
@@ -20,15 +19,30 @@ namespace Repository
         {
             _appDbContext = appDbContext;
             _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(appDbContext));
-            _inventoryRepository = new Lazy<IInventoryRepository>(() => new InventoryRepository(appDbContext));
             _orderRepository = new Lazy<IOrderRepository>(() => new OrderRepository(appDbContext));
             _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(appDbContext));
         }
 
         public ICategoryRepository Category => _categoryRepository.Value;
-        public IInventoryRepository Inventory => _inventoryRepository.Value;
         public IOrderRepository Order => _orderRepository.Value;
         public IProductRepository Product => _productRepository.Value;
         public async Task SaveAsync() => await _appDbContext.SaveChangesAsync();
+        public async Task BeginTransaction(Func<Task> action)
+        {
+            await using var transaction = await _appDbContext.Database.BeginTransactionAsync();
+            try
+            {
+                await action();
+
+                await SaveAsync();
+                await transaction.CommitAsync();
+
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

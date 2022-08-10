@@ -23,4 +23,28 @@ namespace Shared.Helpers
     {
         public T Error { get; set; }
     }
+
+    public class PagedResponse<T> : Response
+    {
+        public PagedResponse()
+        {
+            Success = true;
+        }
+        public T Data { get; set; }
+        public Meta Meta { get; set; }
+    }
+
+    public class Meta
+    {
+        public Pagination Pagination { get; set; }
+    }
+
+    public class Pagination
+    {
+        public string NextPage { get; set; }
+        public string PreviousPage { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }   
+        public int Total { get; set; }
+    }
 }

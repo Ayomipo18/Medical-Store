@@ -7,11 +7,7 @@ using System.Threading.Tasks;
 
 namespace Contracts
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IRepositoryBase<Order>
     {
-        void CreateOrder(Order order);
-        Task<IEnumerable<Order>> GetAllOrdersAsync(bool trackchanges);
-        //Task<Order> GetOrderAsync(Guid id, bool trackChanges);
-        //void DeleteOrder(Order order);
     }
 }

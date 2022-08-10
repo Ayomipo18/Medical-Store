@@ -15,13 +15,5 @@ namespace Repository
         public OrderRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
-
-        public void CreateOrder(Order order) => Create(order);
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync(bool trackChanges) =>
-            await FindAll(trackChanges)
-                .ToListAsync();
-
-        //public async Task<Category> GetCategoryAsync(Guid id, bool trackChanges) =>
-        //    await FindByCondition()
     }
 }

@@ -15,13 +15,5 @@ namespace Repository
         public CategoryRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
-
-        public void CreateCategory(Category category) => Create(category);
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync(bool trackChanges) =>
-            await FindAll(trackChanges)
-                .ToListAsync();
-
-        //public async Task<Category> GetCategoryAsync(Guid id, bool trackChanges) =>
-        //    await FindByCondition()
     }
 }

@@ -137,7 +137,8 @@ namespace Service
                 new Claim("Email", user.Email),
                 new Claim("UserId", user.Id.ToString()),
                 new Claim("FirstName", user.FirstName),
-                new Claim("LastName", user.LastName)
+                new Claim("LastName", user.LastName),
+                new Claim("PhoneNumber", user.PhoneNumber)
             };
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -157,7 +158,7 @@ namespace Service
                 issuer: _jwtConfiguration.ValidIssuer,
                 audience: _jwtConfiguration.ValidAudience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtConfiguration.Expires)),
+                expires: DateTime.Now.AddDays(Convert.ToDouble(_jwtConfiguration.Expires)),
                 signingCredentials: signingCredentials
             );
 

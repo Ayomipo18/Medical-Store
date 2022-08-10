@@ -1,4 +1,6 @@
 using MedicalStore.Extensions;
+using MedicalStore.Middlewares;
+using MedicalStore.Presentation.Helpers;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -21,13 +23,13 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 builder.Services.ConfigureCors();
 builder.Services.ConfifureIISIntegration();
 builder.Services.ConfigureLoggerService();
+builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureSqlContext(builder.Configuration);
-builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureMvc();
 
 builder.Services.AddControllers(config =>
@@ -37,6 +39,7 @@ builder.Services.AddControllers(config =>
     config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
 }).AddXmlDataContractSerializerFormatters()
 .AddApplicationPart(typeof(MedicalStore.Presentation.AssemblyReference).Assembly);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
@@ -62,8 +65,14 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 app.UseCors();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
+app.UseErrorHandler();
+
 app.MapControllers();
+
+WebHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 
 app.Run();

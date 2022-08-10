@@ -30,7 +30,7 @@ namespace MedicalStore.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPost("refresh-token")]
+        [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto tokenDto)
         {
             var response =  await _service.AuthenticationService.RefreshToken(tokenDto);

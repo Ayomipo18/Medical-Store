@@ -9,9 +9,9 @@ namespace Contracts
     public interface IRepositoryManager
     {
         ICategoryRepository Category { get; }
-        IInventoryRepository Inventory { get; }
         IOrderRepository Order { get; }
         IProductRepository Product { get; }
+        Task BeginTransaction(Func<Task> action);
         Task SaveAsync();
     }
 }
