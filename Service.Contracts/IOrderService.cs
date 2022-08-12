@@ -12,7 +12,7 @@ namespace Service.Contracts
     public interface IOrderService
     {
         Task<SuccessResponse<OrderDto>> CreateOrder(OrderCreateDto createOrderDto, LoggedInUserDto loggedInUser);
-        Task<PagedResponse<IEnumerable<OrderDto>>> GetAllOrders(ResourceParameter parameter, string actionName, IUrlHelper Url);
-        Task<SuccessResponse<OrderDto>> GetOrder(Guid id);
+        Task<PagedResponse<IEnumerable<OrderDto>>> GetAllOrders(ResourceParameter parameter, string actionName, IUrlHelper Url, LoggedInUserDto loggedInUser);
+        Task<SuccessResponse<OrderDto>> GetOrder(Guid id, LoggedInUserDto loggedInUser);
     }
 }

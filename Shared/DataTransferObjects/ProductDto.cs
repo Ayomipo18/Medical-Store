@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Shared.DataTransferObjects
         public string Description { get; set; }
         public float SellingPrice { get; set; }
         public int Quantity { get; set; }
+        public string ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
@@ -31,6 +33,7 @@ namespace Shared.DataTransferObjects
         public float CostPrice { get; set; }
         public float ProfitMargin { get; set; }
         public int Quantity { get; set; }
+        public IFormFile Image { get; set; }
     }
 
     public record ProductUpdateDto : ProductCreateDto

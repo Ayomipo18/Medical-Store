@@ -18,6 +18,7 @@ namespace Shared.Validations
             RuleFor(x => x.CostPrice).NotNull().NotEmpty().WithMessage("Cost Price is Required");
             RuleFor(x => x.ProfitMargin).NotNull().NotEmpty().WithMessage("Profit Margin is Required");
             RuleFor(x => x.Quantity).NotNull().NotEmpty().WithMessage("Quantity is Required");
+            RuleFor(x => x.Image).NotNull().NotEmpty().WithMessage("Image is Required");
         }
     }
 
@@ -31,6 +32,7 @@ namespace Shared.Validations
             RuleFor(x => x.CostPrice).NotNull().NotEmpty().WithMessage("Cost Price is Required");
             RuleFor(x => x.ProfitMargin).NotNull().NotEmpty().WithMessage("Profit Margin is Required");
             RuleFor(x => x.Quantity).NotNull().NotEmpty().WithMessage("Quantity is Required");
+            RuleFor(x => x.Image).NotNull().NotEmpty().WithMessage("Image is Required");
         }
     }
 }

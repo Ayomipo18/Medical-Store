@@ -22,7 +22,7 @@ namespace MedicalStore.Presentation.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDto productCreateDto)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductCreateDto productCreateDto)
         {
             var response = await _service.ProductService.CreateProduct(productCreateDto);
             return Ok(response);
@@ -30,7 +30,7 @@ namespace MedicalStore.Presentation.Controllers
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateProduct(Guid id, ProductUpdateDto productUpdateDto)
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] ProductUpdateDto productUpdateDto)
         {
             var response = await _service.ProductService.UpdateProduct(id, productUpdateDto);
             return Ok(response);
@@ -44,7 +44,7 @@ namespace MedicalStore.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetAllProducts))]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductParameters parameter)
         {
             var response = await _service.ProductService.GetAllProducts(parameter, nameof(GetAllProducts), Url);

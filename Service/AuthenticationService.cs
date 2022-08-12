@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts;
+using Service.Utils.Email;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
 using System;
@@ -28,8 +29,9 @@ namespace Service
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly JwtConfiguration _jwtConfiguration;
+        private readonly IEmailManager _emailManager;
 
-        public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+        public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration, IEmailManager emailManager)
         {
             _logger = logger;
             _mapper = mapper;
@@ -37,6 +39,7 @@ namespace Service
             _configuration = configuration;
             _jwtConfiguration = new JwtConfiguration();
             _configuration.Bind(_jwtConfiguration.Section, _jwtConfiguration);
+            _emailManager = emailManager;
         }
 
         public async Task<SuccessResponse<UserDto>> CreateUser(UserCreateDto userCreate)
@@ -50,6 +53,8 @@ namespace Service
                 await _userManager.AddToRoleAsync(user, ERole.Customer.ToString());
 
             else throw new RestException(HttpStatusCode.InternalServerError, result.ToString());
+
+            await _emailManager.SendSingleEmail(user.Email, "Registration Successful", "Welcome");
 
             var userResponse = _mapper.Map<UserDto>(user);
 

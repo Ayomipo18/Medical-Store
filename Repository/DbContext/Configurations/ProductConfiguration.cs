@@ -20,6 +20,7 @@ namespace Repository.DbContext.Configurations
             builder.Property(x => x.ProfitMargin).IsRequired();
             builder.Property(x => x.SellingPrice).IsRequired();
             builder.Property(x => x.Quantity).IsRequired();
+            builder.Property(x => x.ImageUrl).IsRequired();
         }
     }
 }

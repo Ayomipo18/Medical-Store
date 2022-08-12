@@ -27,28 +27,20 @@ namespace MedicalStore.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [HttpGet(Name = nameof(GetAllOrders))]
+        [Authorize]
         public async Task<IActionResult> GetAllOrders([FromQuery] ResourceParameter parameter)
         {
-            var response = await _service.OrderService.GetAllOrders(parameter, nameof(GetAllOrders), Url);
+            var response = await _service.OrderService.GetAllOrders(parameter, nameof(GetAllOrders), Url, loggedInUser);
             return Ok(response);
         }
 
         [HttpGet("{id:guid}")]
-        [Authorize(Roles = "Customer")]
+        [Authorize]
         public async Task<IActionResult> GetOrder(Guid id)
         {
-            var response = await _service.OrderService.GetOrder(id);
+            var response = await _service.OrderService.GetOrder(id, loggedInUser);
             return Ok(response);
         }
-
-        //[HttpGet("{id:guid}")]
-        //[Authorize(Roles = "Customer")]
-        //public async Task<IActionResult> GetOrdersForUser(Guid id)
-        //{
-        //    var response = await _service.OrderService.GetOrder(id);
-        //    return Ok(response);
-        //}
     }
 }
