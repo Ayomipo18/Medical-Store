@@ -36,7 +36,7 @@ namespace MedicalStore.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetAllCategories))]
         public async Task<IActionResult> GetAllCategories([FromQuery] ResourceParameter parameter)
         {
             var response = await _service.CategoryService.GetAllCategories(parameter, nameof(GetAllCategories), Url);

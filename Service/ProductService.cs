@@ -5,6 +5,7 @@ using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Service.Contracts;
+using Service.Utils.Azure;
 using Shared.DataTransferObjects;
 using Shared.Helpers;
 using System;
@@ -20,11 +21,13 @@ namespace Service
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
+        private readonly IAzureBlobStorage _azure;
 
-        public ProductService(IRepositoryManager repositoryManager, IMapper mapper)
+        public ProductService(IRepositoryManager repositoryManager, IMapper mapper, IAzureBlobStorage azure)
         {
             _repository = repositoryManager;
             _mapper = mapper;
+            _azure = azure;
         }
 
         public async Task<SuccessResponse<ProductDto>> CreateProduct(ProductCreateDto productCreateDto)
@@ -35,6 +38,10 @@ namespace Service
 
             var product = _mapper.Map<Product>(productCreateDto);
             product.SellingPrice = CalculateSellingPrice(product.CostPrice, product.ProfitMargin);
+
+            string imageUrl = await _azure.UploadImageAsync(productCreateDto.Image);
+            product.ImageUrl = imageUrl;
+
             await _repository.Product.AddAsync(product);
 
             await _repository.SaveAsync();
@@ -55,6 +62,10 @@ namespace Service
 
             var product = _mapper.Map(productUpdateDto, productExists);
             product.SellingPrice = CalculateSellingPrice(product.CostPrice, product.ProfitMargin);
+
+            string imageUrl = await _azure.UploadImageAsync(productUpdateDto.Image);
+            product.ImageUrl = imageUrl;
+
             await _repository.SaveAsync();
 
             var productDto = _mapper.Map<ProductDto>(product);

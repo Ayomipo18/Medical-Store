@@ -63,11 +63,21 @@ namespace Service
             };
         }
 
-        public async Task<PagedResponse<IEnumerable<OrderDto>>> GetAllOrders(ResourceParameter parameter, string actionName, IUrlHelper urlHelper)
+        public async Task<PagedResponse<IEnumerable<OrderDto>>> GetAllOrders(ResourceParameter parameter, string actionName, IUrlHelper urlHelper, LoggedInUserDto loggedInUser)
         {
-            var ordersQuery = _repository.Order.QueryAll()
+            IQueryable<Order> ordersQuery;
+
+            if(loggedInUser.Role == "Customer")
+            {
+                ordersQuery = _repository.Order.Get(x => x.UserId == loggedInUser.UserId)
                 .Include(x => x.Product)
                 .Include(x => x.User) as IQueryable<Order>;
+            } else
+            {
+                ordersQuery = _repository.Order.QueryAll()
+                .Include(x => x.Product)
+                .Include(x => x.User) as IQueryable<Order>;
+            }
 
             var ordersDto = ordersQuery.ProjectTo<OrderDto>(_mapper.ConfigurationProvider);
             var orders = await PagedList<OrderDto>.CreateAsync(ordersDto, parameter.PageNumber, parameter.PageSize, parameter.Sort);
@@ -85,13 +95,24 @@ namespace Service
             };
         }
 
-
-        public async Task<SuccessResponse<OrderDto>> GetOrder(Guid id)
+        public async Task<SuccessResponse<OrderDto>> GetOrder(Guid id, LoggedInUserDto loggedInUser)
         {
-            var order = await _repository.Order.Get(x => x.Id == id)
+            Order order;
+
+            if (loggedInUser.Role == "Customer")
+            {
+                order= await _repository.Order.Get(x => x.UserId == loggedInUser.UserId && x.Id == id)
                 .Include(x => x.Product)
                 .Include(x => x.User)
                 .FirstOrDefaultAsync();
+            }
+            else
+            {
+                order = await _repository.Order.Get(x => x.Id == id)
+                    .Include(x => x.Product)
+                    .Include(x => x.User)
+                    .FirstOrDefaultAsync();
+            }
 
             var orderDto = _mapper.Map<OrderDto>(order);
 

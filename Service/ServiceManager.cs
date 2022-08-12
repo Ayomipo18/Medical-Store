@@ -4,6 +4,8 @@ using Entities.Models.Identities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Service.Contracts;
+using Service.Utils.Azure;
+using Service.Utils.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +21,11 @@ namespace Service
         private readonly Lazy<IProductService> _productService;
         private readonly Lazy<IOrderService> _orderService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration, IAzureBlobStorage azure, IEmailManager emailManager)
         {
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, configuration));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, configuration, emailManager));
             _categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
-            _productService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper));
+            _productService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper, azure));
             _orderService = new Lazy<IOrderService>(() => new OrderService(repositoryManager, mapper, userManager));
         }
 

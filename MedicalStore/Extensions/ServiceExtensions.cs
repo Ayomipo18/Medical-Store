@@ -13,6 +13,8 @@ using Repository;
 using Repository.DbContext;
 using Service;
 using Service.Contracts;
+using Service.Utils.Azure;
+using Service.Utils.Email;
 using Shared.Validations;
 using System.Text;
 
@@ -44,6 +46,12 @@ namespace MedicalStore.Extensions
 
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
+
+        public static void ConfigureApplicationService(this IServiceCollection serviceCollection) =>
+            serviceCollection.AddScoped<IEmailManager, EmailManager>();
+
+        public static void ConfigureAzureServices(this IServiceCollection services) =>
+            services.AddTransient<IAzureBlobStorage, AzureBlobStorage>();
 
         public static void ConfigureSqlContext(this IServiceCollection services,
             IConfiguration configuration) =>
