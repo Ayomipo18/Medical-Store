@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Hangfire;
+using Microsoft.Extensions.Configuration;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Shared.Helpers;
@@ -24,7 +25,12 @@ namespace Service.Utils.Email
             _from = new EmailAddress(senderEmail);
         }
 
-        public async Task SendSingleEmail(string receiverAddress, string message, string subject)
+        public void SendSingleEmail(string receiverAddress, string message, string subject)
+        {
+            BackgroundJob.Enqueue(() => SendSingleMail(receiverAddress, message, subject));
+        }
+
+        public async Task SendSingleMail(string receiverAddress, string message, string subject)
         {
             var To = new EmailAddress(receiverAddress);
             var plainText = message;

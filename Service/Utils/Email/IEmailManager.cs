@@ -8,6 +8,6 @@ namespace Service.Utils.Email
 {
     public interface IEmailManager
     {
-        Task SendSingleEmail(string receiverAddress, string message, string subject);
+        void SendSingleEmail(string receiverAddress, string message, string subject);
     }
 }

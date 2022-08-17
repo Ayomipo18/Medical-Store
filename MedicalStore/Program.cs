@@ -1,3 +1,4 @@
+using Hangfire;
 using MedicalStore.Extensions;
 using MedicalStore.Middlewares;
 using MedicalStore.Presentation.Helpers;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using NLog;
 using Repository.DbContext;
+using Shared.Helpers;
 
 NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
     new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
@@ -31,7 +33,7 @@ builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureSwagger();
-builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.ConfigureSqlContextandHangFire(builder.Configuration);
 builder.Services.ConfigureMvc();
 
 builder.Services.AddControllers(config =>
@@ -51,7 +53,16 @@ app.SeedUserData().Wait();
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsProduction())
+{
     app.UseHsts();
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new[] { new HangFireAuthorizationFilter(builder.Configuration) }
+    });
+} else if(app.Environment.IsDevelopment())
+{
+    app.UseHangfireDashboard();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/api/swagger.json", "Medical Store API"));
