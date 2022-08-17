@@ -54,7 +54,7 @@ namespace Service
 
             else throw new RestException(HttpStatusCode.InternalServerError, result.ToString());
 
-            await _emailManager.SendSingleEmail(user.Email, "Registration Successful", "Welcome");
+            _emailManager.SendSingleEmail(user.Email, "Registration Successful", "Welcome");
 
             var userResponse = _mapper.Map<UserDto>(user);
 
@@ -129,7 +129,7 @@ namespace Service
 
         private SigningCredentials GetSigningCredentials()
         {
-            var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+            var key = Encoding.UTF8.GetBytes(_jwtConfiguration.Secret);
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
@@ -188,7 +188,7 @@ namespace Service
                 ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))),
+                    Encoding.UTF8.GetBytes(_jwtConfiguration.Secret)),
                 ValidateLifetime = true,
                 ValidIssuer = _jwtConfiguration.ValidIssuer,
                 ValidAudience = _jwtConfiguration.ValidAudience
