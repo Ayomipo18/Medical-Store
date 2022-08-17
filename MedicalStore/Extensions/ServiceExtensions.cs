@@ -2,6 +2,7 @@
 using Entities.ConfigurationModels;
 using Entities.Models.Identities;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using LoggerService;
 using MedicalStore.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,10 +54,18 @@ namespace MedicalStore.Extensions
         public static void ConfigureAzureServices(this IServiceCollection services) =>
             services.AddTransient<IAzureBlobStorage, AzureBlobStorage>();
 
-        public static void ConfigureSqlContext(this IServiceCollection services,
-            IConfiguration configuration) =>
-                services.AddDbContext<AppDbContext>(opts =>
-                    opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
+        public static void ConfigureSqlContextandHangFire(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var conn = configuration.GetConnectionString("sqlConnection");
+
+            services.AddDbContext<AppDbContext>(opts =>
+                opts.UseSqlServer(conn));
+
+            services.AddHangfire(x =>
+                x.UseSqlServerStorage(conn));
+            services.AddHangfireServer();
+        }
 
         public static void ConfigureMvc(this IServiceCollection services)
         {
@@ -87,7 +96,6 @@ namespace MedicalStore.Extensions
         {
             var jwtConfiguration = new JwtConfiguration();
             configuration.Bind(jwtConfiguration.Section, jwtConfiguration);
-            var secretKey = Environment.GetEnvironmentVariable("SECRET");
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -103,7 +111,7 @@ namespace MedicalStore.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtConfiguration.ValidIssuer,
                     ValidAudience = jwtConfiguration.ValidAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration.Secret))
                 };
             });
         }
